@@ -7,3 +7,5 @@
 - nodemailer - is to send email from the application
 
 - mongoose - to talk to our database
+
+-bcrypt error - solves by npm install @types/bcryptjs

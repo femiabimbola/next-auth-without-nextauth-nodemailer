@@ -22,12 +22,15 @@ export const POST = async (request: NextRequest) => {
     const salt = await bcryptjs.genSalt(10)
     const hashedPassword = await bcryptjs.hash(password, salt)
 
-    const newUser = new User({ userName, email, password: hashedPassword })
-    const savedUser = await newUser.save()
+    const newUser = new User({ userName, email, password: hashedPassword, firstName, lastName })
 
-    return NextResponse.json({ message: "user created successfully", savedUser }, { status: 201 })
+    const savedUser = await newUser.save().then(
+      console.log('User saved')
+    )
 
+    return NextResponse.json({ message: "user created successfully", newUser }, { status: 201 })
   } catch (error: any) {
+    console.log('error occured o tush')
     return NextResponse.json({ error: error.message }, { status: 500 })
   }
 }

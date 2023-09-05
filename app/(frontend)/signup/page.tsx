@@ -40,20 +40,21 @@ const Registration = () => {
     e.preventDefault();
     try {
       setLoading(true)
-      axios.post('api/users/signup', formData)
+      await axios.post('api/users/register', formData)
+      toast.success('user created successfully')
+      router.push("/login")
 
     } catch (error: any) {
-      console.log("sign up failed", error.message)
       toast.error(error.message)
+      console.log("sign up failed", error.message)
     }
-    console.log(formData);
   };
 
 
 
   return (
     <div className="flex flex-col justify-center items-center h-screen">
-      <h2 className='font-bold text-2xl mb-4'>Registration</h2>
+      <h2 className='font-bold text-2xl mb-4'>{loading ? "Waiting" : "Sign Up"}</h2>
       <form
         className="bg-white/70 shadow-md rounded px-8 pt-6 pb-8 mb-4"
         onSubmit={handleSubmit}
@@ -66,7 +67,7 @@ const Registration = () => {
             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             id="firstName"
             type="text"
-            name="firstName"
+            name="userName"
             placeholder='Enter a username'
             value={formData.userName}
             onChange={handleChange}

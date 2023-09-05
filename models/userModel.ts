@@ -40,7 +40,6 @@ const userSchema = new mongoose.Schema({
 })
 
 // mongo changes the mode to lowercase
-
 const User = mongoose.models.users || mongoose.model("users", userSchema)
 
 export default User;
