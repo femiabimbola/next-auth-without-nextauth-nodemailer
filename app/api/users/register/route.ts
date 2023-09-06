@@ -28,6 +28,8 @@ export const POST = async (request: NextRequest) => {
       console.log('User saved')
     )
 
+    // await newUser.save().then( const savedUser === newUser)
+
     return NextResponse.json({ message: "user created successfully", newUser }, { status: 201 })
   } catch (error: any) {
     console.log('error occured o tush')

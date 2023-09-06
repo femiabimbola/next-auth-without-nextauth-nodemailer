@@ -1,13 +1,20 @@
 "use client"
 
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import axios from 'axios';
+import toast from 'react-hot-toast';
 
 const LoginPage = () => {
+  const router = useRouter()
   const [formData, setFormData] = useState({
     email: '',
     password: '',
   });
+
+  const [loading, setLoading] = useState(false)
+  const [buttonDisabled, setButtonDisabled] = useState(false)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -17,15 +24,34 @@ const LoginPage = () => {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  useEffect(() => {
+    if (formData.email.length > 0 && formData.password.length > 0) {
+      setButtonDisabled(false)
+    } else {
+      setButtonDisabled(true)
+    }
+  }, [formData])
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // Handle form submission logic here
-    console.log(formData);
+    try {
+      setLoading(true)
+      console.log(formData)
+      const response = await axios.post('api/users/login', formData)
+      toast.success(`user created successfully - ${response.data}`)
+      router.push("/profile")
+    } catch (error: any) {
+      toast.error(error.message)
+      console.log("sign up failed", error.message)
+    } finally {
+      setLoading(false)
+    }
   };
+
 
   return (
     <div className="flex flex-col justify-center items-center h-screen">
-      <h2 className='font-bold text-2xl mb-4'>Login</h2>
+      <h2 className='font-bold text-2xl mb-4'>{loading ? 'processing' : ' Login'}</h2>
       <form
         className="bg-white/70 shadow-md rounded px-8 pt-6 pb-8 mb-4"
         onSubmit={handleSubmit}

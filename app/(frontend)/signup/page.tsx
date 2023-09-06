@@ -47,6 +47,8 @@ const Registration = () => {
     } catch (error: any) {
       toast.error(error.message)
       console.log("sign up failed", error.message)
+    } finally {
+      setLoading(false)
     }
   };
 

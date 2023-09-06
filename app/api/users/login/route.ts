@@ -2,6 +2,7 @@ import { connect } from "@/dbConfig/dbConfig";
 import User from "@/models/userModel";
 import { NextRequest, NextResponse } from "next/server";
 import bcryptjs from "bcryptjs"
+import jwt from 'jsonwebtoken'
 
 connect()
 
@@ -22,12 +23,23 @@ export const POST = async (request: NextRequest) => {
     if (!validPassword) return NextResponse.json({ error: 'Password is not correct' }, { status: 400 })
 
     // Token is created when user sign in , Token is a ticket, created by jsonwebtoken
-    // The token is send into cookies, not localstorage
+    // The token is send into cookies, not localstorage. We can access the cookies if we want
 
     const tokenData = {
-      id: user._if
+      id: user._id,
+      username: user.userName,
+      email: user.email
     }
 
+    // create token
+    const token = await jwt.sign(tokenData, process.env.TOKEN_SECRET!, { expiresIn: '1h' })
+
+    const response = NextResponse.json({
+      message: "Login successful", success: true
+    })
+    response.cookies.set("token", token, { httpOnly: true })
+
+    return response;
 
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 })
