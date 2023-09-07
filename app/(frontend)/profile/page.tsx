@@ -1,6 +1,10 @@
 "use client"
 
 import { useState } from 'react';
+import axios from "axios";
+import Link from 'next/link';
+import { toast } from 'react-hot-toast';
+import { useRouter } from 'next/navigation';
 
 const Profile = () => {
   const [userData, setUserData] = useState({
@@ -10,6 +14,8 @@ const Profile = () => {
     bio: 'I am a software developer.',
   });
 
+  const router = useRouter()
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setUserData((prevData) => ({
@@ -17,6 +23,17 @@ const Profile = () => {
       [name]: value,
     }));
   };
+
+  const logout = async () => {
+    try {
+      await axios.get('/api/users/logout')
+      toast.success('Logout successful')
+      router.push('/login')
+    } catch (error: any) {
+      console.log(error.message)
+      toast.error(error.message)
+    }
+  }
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -26,6 +43,11 @@ const Profile = () => {
 
   return (
     <div className="flex justify-center items-center h-screen">
+      <button className='bg-blue-500 text-white font-bold rounded hover:bg-blue-700'
+        onClick={logout}
+      >
+        Logout
+      </button>
       <form
         className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4"
         onSubmit={handleSubmit}
