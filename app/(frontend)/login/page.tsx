@@ -36,7 +36,6 @@ const LoginPage = () => {
     e.preventDefault();
     try {
       setLoading(true)
-      console.log(formData)
       const response = await axios.post('api/users/login', formData)
       toast.success(`user created successfully - ${response.data}`)
       router.push("/profile")

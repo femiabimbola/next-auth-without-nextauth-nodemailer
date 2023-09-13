@@ -1,29 +1,17 @@
-"use client"
+'use client'
 
-import { useState } from 'react';
 import axios from "axios";
-import Link from 'next/link';
-import { toast } from 'react-hot-toast';
+import { useState } from 'react'
 import { useRouter } from 'next/navigation';
+import { toast } from 'react-hot-toast';
+import Link from "next/link";
 
-const Profile = () => {
+const ProfilePage = ({ params }: any) => {
+
   const [userData, setUserData] = useState({
-    firstName: 'John',
-    lastName: 'Doe',
-    email: 'johndoe@example.com',
-    bio: 'I am a software developer.',
-  });
-
+    _id: '', firstName: ''
+  })
   const router = useRouter()
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    setUserData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-  };
-
   const logout = async () => {
     try {
       await axios.get('/api/users/logout')
@@ -35,89 +23,37 @@ const Profile = () => {
     }
   }
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    // Handle form submission logic here
-    console.log(userData);
-  };
+
+  const getUserDetails = async () => {
+    const respond = await axios.get('/api/users/detail')
+    // console.log(respond.data.data.firstName)
+    setUserData(respond.data.data)
+    // return respond.data
+    // console.log(respond.data.data._id)
+  }
+  getUserDetails()
+
+
 
   return (
-    <div className="flex justify-center items-center h-screen">
-      <button className='bg-blue-500 text-white font-bold rounded hover:bg-blue-700'
-        onClick={logout}
-      >
-        Logout
-      </button>
-      <form
-        className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4"
-        onSubmit={handleSubmit}
-      >
-        <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="firstName">
-            First Name
-          </label>
-          <input
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            id="firstName"
-            type="text"
-            name="firstName"
-            value={userData.firstName}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="lastName">
-            Last Name
-          </label>
-          <input
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            id="lastName"
-            type="text"
-            name="lastName"
-            value={userData.lastName}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
-            Email
-          </label>
-          <input
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            id="email"
-            type="email"
-            name="email"
-            value={userData.email}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="bio">
-            Bio
-          </label>
-          <textarea
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            id="bio"
-            name="bio"
-            value={userData.bio}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <div className="flex items-center justify-between">
-          <button
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-            type="submit"
+    <div className="flex flex-col justify-center items-center h-screen">
+      {userData.firstName === '' ? "loading" :
+        <>
+          <h2>
+            {/* {userData._id === "" ? "nothing" : <Link href={`/profile/${userData._id}`}> Move</Link>} */}
+          </h2 >
+          <button className='bg-blue-500 text-white p-3 font-bold rounded hover:bg-blue-700'
+            onClick={logout}
           >
-            Save
+            Logout
           </button>
-        </div>
-      </form>
+          <h2 className="text-3xl"> Profile Page</h2>
+          <p> Welcome, {userData.firstName} </p>
+          <Link href={`/profile/${userData._id}`}> Visit your profile</Link>
+        </>
+      }
     </div>
-  );
-};
+  )
+}
 
-export default Profile;
+export default ProfilePage;
