@@ -3,7 +3,7 @@ import { NextResponse, NextRequest } from "next/server";
 
 export const middleware = (request: NextRequest) => {
 	const path = request.nextUrl.pathname
-	const isPublicPath = path === '/login' || path === '/signup'
+	const isPublicPath = path === '/login' || path === '/signup' || path === '/verifyemail'
 	const token = request.cookies.get('token')?.value || ''
 
 	// if (isPublicPath && token) return NextResponse.redirect('/') This is ok too
@@ -12,5 +12,5 @@ export const middleware = (request: NextRequest) => {
 }
 
 export const config = {
-	matcher: ['/', '/profile', '/login', '/signup', '/profile/']
+	matcher: ['/', '/profile', '/login', '/signup', '/profile/', '/verifyemail']
 }
